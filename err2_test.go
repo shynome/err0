@@ -26,9 +26,7 @@ func TestErrBind(t *testing.T) {
 			assert.Equal(a, 0)
 		}()
 
-		var err error
-		defer NilThen(&err, func() { a = 1 })
-		defer err2.Handle(&err, func() { try.To(err) })
+		defer NilThen(func() { a = 1 })
 
 		try.To(terr)
 	})
@@ -41,9 +39,7 @@ func TestErrBind(t *testing.T) {
 			assert.Equal(a, 1)
 		}()
 
-		var err error
-		defer NilThen(&err, func() { a = 1 })
-		defer err2.Handle(&err, func() { try.To(err) })
+		defer NilThen(func() { a = 1 })
 
 		try.To(nil)
 	})
