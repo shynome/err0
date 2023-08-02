@@ -10,7 +10,7 @@ import (
 	"github.com/lainio/err2/try"
 )
 
-func TestBind(t *testing.T) {
+func TestErrBind(t *testing.T) {
 
 	t.Run("0", func(t *testing.T) {
 		var terr = fmt.Errorf("some err")
@@ -28,7 +28,9 @@ func TestBind(t *testing.T) {
 
 		var err error
 		defer NilThen(&err, func() { a = 1 })
-		try.Out(terr).Handle(To(&err))
+		defer err2.Handle(&err, func() { try.To(err) })
+
+		try.To(terr)
 	})
 
 	t.Run("1", func(t *testing.T) {
@@ -41,6 +43,8 @@ func TestBind(t *testing.T) {
 
 		var err error
 		defer NilThen(&err, func() { a = 1 })
-		try.Out(nil).Handle(To(&err))
+		defer err2.Handle(&err, func() { try.To(err) })
+
+		try.To(nil)
 	})
 }

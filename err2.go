@@ -5,10 +5,3 @@ func NilThen(err *error, fn func()) {
 		fn()
 	}
 }
-
-func To(ep *error) func(err error) error {
-	return func(err error) error {
-		*ep = err
-		return err
-	}
-}
