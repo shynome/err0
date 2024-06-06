@@ -19,3 +19,5 @@ func Then(err *error, onok func(), onerr func()) {
 		onerr()
 	}
 }
+
+var Throw = try.To
