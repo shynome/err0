@@ -1,9 +1,10 @@
-package err0
+package err0_test
 
 import (
 	"fmt"
 	"testing"
 
+	"github.com/shynome/err0"
 	"github.com/shynome/err0/try"
 )
 
@@ -11,26 +12,26 @@ func TestThen(t *testing.T) {
 	se := fmt.Errorf("hi, error!")
 	t.Run("has error", func(t *testing.T) {
 		var err error
-		defer Then(&err, nil, func() {
+		defer err0.Then(&err, nil, func() {
 			if err != se {
 				t.Error(err)
 			}
 		})
-		defer Then(&err, nil, func() {
+		defer err0.Then(&err, nil, func() {
 			if err != se {
 				t.Error(err)
 			}
 		})
-		try.To(se)
+		err0.Throw(se)
 	})
 	t.Run("no error", func(t *testing.T) {
 		var err error
-		defer Then(&err, func() {
+		defer err0.Then(&err, func() {
 			if err != nil {
 				t.Error(err)
 			}
 		}, func() { panic("wwwwwwwww") })
-		defer Then(&err, func() {
+		defer err0.Then(&err, func() {
 			if err != nil {
 				t.Error(err)
 			}
@@ -44,22 +45,22 @@ func TestThen(t *testing.T) {
 				t.Error(r)
 			}
 		}()
-		defer Then(&err, nil, nil)
+		defer err0.Then(&err, nil, nil)
 		panic(se)
 	})
 	t.Run("miao", func(t *testing.T) {
 		se1 := fmt.Errorf("hi, error2!")
 		var err error
-		defer Then(&err, nil, func() {
+		defer err0.Then(&err, nil, func() {
 			panic("wwwwwwwww")
 		})
-		defer Then(&err, nil, func() {
+		defer err0.Then(&err, nil, func() {
 			if err != se1 {
 				t.Error(err)
 			}
 			err = nil
 		})
-		defer Then(&err, nil, func() {
+		defer err0.Then(&err, nil, func() {
 			if err != se {
 				t.Error(err)
 			}
