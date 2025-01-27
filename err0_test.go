@@ -12,17 +12,43 @@ func TestThen(t *testing.T) {
 	se := fmt.Errorf("hi, error!")
 	t.Run("has error", func(t *testing.T) {
 		var err error
-		defer err0.Then(&err, nil, func() {
+		defer err0.Then(&err, func() {
+			t.Error("不应该到达此处")
+		}, func() {
 			if err != se {
 				t.Error(err)
 			}
 		})
-		defer err0.Then(&err, nil, func() {
+		defer err0.Then(&err, func() {
+			t.Error("不应该到达此处")
+		}, func() {
 			if err != se {
 				t.Error(err)
 			}
 		})
 		err0.Throw(se)
+	})
+	t.Run("has error2", func(t *testing.T) {
+		var err error
+		defer err0.Then(&err, func() {
+			t.Error("不应该到达此处")
+		}, func() {
+			if err != se {
+				t.Error(err)
+			}
+		})
+		func() { // 演示如何不捕捉内部匿名函数错误, 再次抛出即可
+			defer err0.Then(&err, func() {
+				t.Error("不应该到达此处")
+			}, func() {
+				if err != se {
+					t.Error(err)
+				}
+				err0.Throw(err)
+			})
+			err0.Throw(se)
+		}()
+		t.Error("不应该到达此处")
 	})
 	t.Run("no error", func(t *testing.T) {
 		var err error
